@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+
+option go_package = "kenmec/yfy/protoGen;gen";
+
+package yfy_pb;
+
+message OrderInfo {
+  string order_no = 1;
+  int32 paper_count = 2;
+  int32 height = 3;
+  string batch_no = 4;
+  string warehouse_no = 5;
+  string tray_type = 6;
+}
+
+
+message CallTray {
+  string tray_type = 1;
+  int32 tray_qty = 2;
+  string  work_station =3;
+}
+
+message Replenish {
+  int32 tray_qty = 2;
+  string work_station =3;
+}
+
+message ClientMessage {
+  string request_id  = 1;
+  oneof payload {
+    // when request id is 2
+    int32 hb = 2;
+    // when request id is 3
+    OrderInfo order_info = 3;
+    // when request id is 4
+    CallTray call_tray = 4;
+    // when request id is 5
+    Replenish replenish = 5;
+  }
+}
+
+message ServerMessage {
+  string request_id  = 1;
+  oneof payload {
+    // request id 2 mean heartbeat
+    int32 hb = 2;
+  }
+}
+
+
+// bidirectional Streaming
+service YFYService {
+  // bidirectional Streaming
+  rpc YFYStreaming(stream ClientMessage) returns (stream ServerMessage);
+}
