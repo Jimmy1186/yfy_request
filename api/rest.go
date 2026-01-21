@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"kenmec/yfyRequest/jimmy/config"
 	dbs "kenmec/yfyRequest/jimmy/db"
+	gen "kenmec/yfyRequest/jimmy/protoGen"
 	"kenmec/yfyRequest/jimmy/sqlQuery"
 	"net/http"
 	"time"
@@ -101,14 +102,15 @@ func (a *RobotAmrRequest) OrderInfoReq(c *gin.Context) {
 	curOrder, err := dbs.Mdb.CurrentContainerMaxOrder(ctx, conveyorId)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"code":      500,
-			"message":   err,
-			"result":    gin.H{},
-			"success":   false,
-			"timpstamp": timestamp,
-		})
-		return
+		curOrder = 0
+		// c.JSON(http.StatusInternalServerError, gin.H{
+		// 	"code":      500,
+		// 	"message":   err.Error(),
+		// 	"result":    gin.H{},
+		// 	"success":   false,
+		// 	"timpstamp": timestamp,
+		// })
+		// return
 	}
 
 	err = dbs.WithTransaction(ctx, func(q *sqlQuery.Queries) error {
@@ -145,6 +147,20 @@ func (a *RobotAmrRequest) OrderInfoReq(c *gin.Context) {
 		c.JSON(500, gin.H{"message": "資料庫操作失敗: " + err.Error()})
 		return
 	}
+
+	a.grpcClient.SendMessage(&gen.ClientMessage{
+
+		Payload: &gen.ClientMessage_OrderInfo{
+			OrderInfo: &gen.OrderInfo{
+				OrderNo:     req.OrderNo,
+				PaperCount:  *req.PaperCount,
+				Height:      *req.Height,
+				BatchNo:     req.BatchNo,
+				WarehouseNo: req.WarehouseNo,
+				TrayType:    req.TrayType,
+			},
+		},
+	})
 
 	// 回傳 JSON 響應
 	c.JSON(http.StatusOK, gin.H{
@@ -243,6 +259,16 @@ func (a *RobotAmrRequest) CallTrayReq(c *gin.Context) {
 		return
 	}
 
+	a.grpcClient.SendMessage(&gen.ClientMessage{
+		Payload: &gen.ClientMessage_CallTray{
+			CallTray: &gen.CallTray{
+				TrayType:    req.TrayType,
+				TrayQty:     *req.TrayQty,
+				WorkStation: req.WorkStation,
+			},
+		},
+	})
+
 	// 回傳 JSON 響應
 	c.JSON(http.StatusOK, gin.H{
 		"code":      200,
@@ -272,6 +298,15 @@ func (a *RobotAmrRequest) Replenish(c *gin.Context) {
 	fmt.Println("================ DEBUG LOG ================")
 	fmt.Printf("📦 Data Content:\n%s\n", string(prettyJSON))
 	fmt.Println("===========================================")
+
+	a.grpcClient.SendMessage(&gen.ClientMessage{
+		Payload: &gen.ClientMessage_Replenish{
+			Replenish: &gen.Replenish{
+				TrayQty:     *req.TrayQty,
+				WorkStation: req.WorkStation,
+			},
+		},
+	})
 
 	// 回傳 JSON 響應
 	c.JSON(http.StatusOK, gin.H{

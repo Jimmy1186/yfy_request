@@ -218,8 +218,7 @@ func (x *Replenish) GetWorkStation() string {
 }
 
 type ClientMessage struct {
-	state     protoimpl.MessageState `protogen:"open.v1"`
-	RequestId string                 `protobuf:"bytes,1,opt,name=request_id,json=requestId,proto3" json:"request_id,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
 	// Types that are valid to be assigned to Payload:
 	//
 	//	*ClientMessage_Hb
@@ -259,13 +258,6 @@ func (x *ClientMessage) ProtoReflect() protoreflect.Message {
 // Deprecated: Use ClientMessage.ProtoReflect.Descriptor instead.
 func (*ClientMessage) Descriptor() ([]byte, []int) {
 	return file_yfy_proto_rawDescGZIP(), []int{3}
-}
-
-func (x *ClientMessage) GetRequestId() string {
-	if x != nil {
-		return x.RequestId
-	}
-	return ""
 }
 
 func (x *ClientMessage) GetPayload() isClientMessage_Payload {
@@ -344,8 +336,7 @@ func (*ClientMessage_CallTray) isClientMessage_Payload() {}
 func (*ClientMessage_Replenish) isClientMessage_Payload() {}
 
 type ServerMessage struct {
-	state     protoimpl.MessageState `protogen:"open.v1"`
-	RequestId string                 `protobuf:"bytes,1,opt,name=request_id,json=requestId,proto3" json:"request_id,omitempty"`
+	state protoimpl.MessageState `protogen:"open.v1"`
 	// Types that are valid to be assigned to Payload:
 	//
 	//	*ServerMessage_Hb
@@ -382,13 +373,6 @@ func (x *ServerMessage) ProtoReflect() protoreflect.Message {
 // Deprecated: Use ServerMessage.ProtoReflect.Descriptor instead.
 func (*ServerMessage) Descriptor() ([]byte, []int) {
 	return file_yfy_proto_rawDescGZIP(), []int{4}
-}
-
-func (x *ServerMessage) GetRequestId() string {
-	if x != nil {
-		return x.RequestId
-	}
-	return ""
 }
 
 func (x *ServerMessage) GetPayload() isServerMessage_Payload {
@@ -437,19 +421,15 @@ const file_yfy_proto_rawDesc = "" +
 	"\fwork_station\x18\x03 \x01(\tR\vworkStation\"I\n" +
 	"\tReplenish\x12\x19\n" +
 	"\btray_qty\x18\x02 \x01(\x05R\atrayQty\x12!\n" +
-	"\fwork_station\x18\x03 \x01(\tR\vworkStation\"\xe3\x01\n" +
-	"\rClientMessage\x12\x1d\n" +
-	"\n" +
-	"request_id\x18\x01 \x01(\tR\trequestId\x12\x10\n" +
+	"\fwork_station\x18\x03 \x01(\tR\vworkStation\"\xc4\x01\n" +
+	"\rClientMessage\x12\x10\n" +
 	"\x02hb\x18\x02 \x01(\x05H\x00R\x02hb\x122\n" +
 	"\n" +
 	"order_info\x18\x03 \x01(\v2\x11.yfy_pb.OrderInfoH\x00R\torderInfo\x12/\n" +
 	"\tcall_tray\x18\x04 \x01(\v2\x10.yfy_pb.CallTrayH\x00R\bcallTray\x121\n" +
 	"\treplenish\x18\x05 \x01(\v2\x11.yfy_pb.ReplenishH\x00R\treplenishB\t\n" +
-	"\apayload\"K\n" +
-	"\rServerMessage\x12\x1d\n" +
-	"\n" +
-	"request_id\x18\x01 \x01(\tR\trequestId\x12\x10\n" +
+	"\apayload\",\n" +
+	"\rServerMessage\x12\x10\n" +
 	"\x02hb\x18\x02 \x01(\x05H\x00R\x02hbB\t\n" +
 	"\apayload2N\n" +
 	"\n" +

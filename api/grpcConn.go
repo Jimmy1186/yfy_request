@@ -129,8 +129,8 @@ func (g *GRPCClient) StartHeartbeat(interval time.Duration) {
 			return
 		case <-ticker.C:
 			hbMsg := &pb.ClientMessage{
-				RequestId: "2",
-				Payload:   &pb.ClientMessage_Hb{Hb: int32(time.Now().Unix())},
+
+				Payload: &pb.ClientMessage_Hb{Hb: int32(time.Now().Unix())},
 			}
 
 			if err := g.SendMessage(hbMsg); err != nil {

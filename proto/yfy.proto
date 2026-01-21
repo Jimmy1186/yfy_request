@@ -27,7 +27,6 @@ message Replenish {
 }
 
 message ClientMessage {
-  string request_id  = 1;
   oneof payload {
     // when request id is 2
     int32 hb = 2;
@@ -41,7 +40,6 @@ message ClientMessage {
 }
 
 message ServerMessage {
-  string request_id  = 1;
   oneof payload {
     // request id 2 mean heartbeat
     int32 hb = 2;
