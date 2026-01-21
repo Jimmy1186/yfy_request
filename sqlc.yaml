@@ -1,0 +1,9 @@
+version: "2"
+sql:
+  - schema: "db/schema.sql" # Path to your CREATE TABLE statements
+    queries: "db/dbquery.sql" # Path to your SELECT/INSERT/UPDATE queries
+    engine: "mysql" # Or "mysql"
+    gen:
+      go:
+        package: "sqlQuery" # The name of the generated Go package
+        out: "sqlQuery" # Where the generated files will live
