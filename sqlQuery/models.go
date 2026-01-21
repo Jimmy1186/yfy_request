@@ -580,6 +580,7 @@ type CargoInfo struct {
 	CustomID              sql.NullString
 	Owner                 CargoInfoOwner
 	StackConfigID         sql.NullString
+	PlacementOrder        int32
 }
 
 type Category struct {
@@ -592,10 +593,10 @@ type ChargeMission struct {
 	ID                        string
 	Active                    bool
 	Aggressivethreshold       sql.NullInt32
+	Passivethreshold          sql.NullInt32
 	Fullthreshold             sql.NullInt32
 	Availablegettaskthreshold sql.NullInt32
 	Missiontitleid            sql.NullString
-	Passivethreshold          sql.NullInt32
 }
 
 type ChargeStationConfig struct {
@@ -632,10 +633,10 @@ type CustomCargoMetadatum struct {
 	UniqueKey  sql.NullString
 }
 
-type CycleTask struct {
-	ID             string
-	AmrID          sql.NullString
-	MissionTitleID string
+type CycleMission struct {
+	ID      string
+	Name    string
+	Payload json.RawMessage
 }
 
 type Direction struct {
@@ -825,10 +826,10 @@ type MockWcsStation struct {
 	MissionScriptID sql.NullString
 	ConveyorID      sql.NullString
 	ElevatorID      sql.NullString
+	StackID         sql.NullString
 	ChargeStationID sql.NullString
 	LiftGateID      sql.NullString
 	GateWaitPointID sql.NullString
-	StackID         sql.NullString
 }
 
 type PeripheralGroup struct {
@@ -884,9 +885,9 @@ type RobotType struct {
 	ID     string
 	Name   string
 	Value  string
+	Height float64
 	Length float64
 	Width  float64
-	Height float64
 }
 
 type Scheduletask struct {

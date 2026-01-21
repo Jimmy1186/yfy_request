@@ -33,11 +33,12 @@ INSERT INTO cargo_info (
     status, 
     owner,
     metadata,
+    placement_order,
     updatedAt,
     custom_cargo_metadata_id,
     conveyor_configId
 ) VALUES (
-    ?,?,?,?,?,?,?,?
+    ?,?,?,?,?,?,?,?,?
 )
 `
 
@@ -47,6 +48,7 @@ type CreateConatinerParams struct {
 	Status                CargoInfoStatus
 	Owner                 CargoInfoOwner
 	Metadata              json.RawMessage
+	PlacementOrder        int32
 	Updatedat             time.Time
 	CustomCargoMetadataID sql.NullString
 	ConveyorConfigid      sql.NullString
@@ -59,6 +61,7 @@ func (q *Queries) CreateConatiner(ctx context.Context, arg CreateConatinerParams
 		arg.Status,
 		arg.Owner,
 		arg.Metadata,
+		arg.PlacementOrder,
 		arg.Updatedat,
 		arg.CustomCargoMetadataID,
 		arg.ConveyorConfigid,
@@ -95,6 +98,21 @@ func (q *Queries) CreateConatinerHistory(ctx context.Context, arg CreateConatine
 		arg.Description,
 	)
 	return err
+}
+
+const currentContainerMaxOrder = `-- name: CurrentContainerMaxOrder :one
+SELECT placement_order FROM cargo_info ci
+JOIN conveyor_config cc ON cc.id = ci.conveyor_configId
+WHERE cc.id = ? 
+ORDER BY placement_order DESC
+LIMIT 1
+`
+
+func (q *Queries) CurrentContainerMaxOrder(ctx context.Context, id string) (int32, error) {
+	row := q.db.QueryRowContext(ctx, currentContainerMaxOrder, id)
+	var placement_order int32
+	err := row.Scan(&placement_order)
+	return placement_order, err
 }
 
 const currentScriptId = `-- name: CurrentScriptId :one

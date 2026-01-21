@@ -98,12 +98,26 @@ func (a *RobotAmrRequest) OrderInfoReq(c *gin.Context) {
 		return
 	}
 
+	curOrder, err := dbs.Mdb.CurrentContainerMaxOrder(ctx, conveyorId)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"code":      500,
+			"message":   err,
+			"result":    gin.H{},
+			"success":   false,
+			"timpstamp": timestamp,
+		})
+		return
+	}
+
 	err = dbs.WithTransaction(ctx, func(q *sqlQuery.Queries) error {
 		err = q.CreateConatiner(ctx, sqlQuery.CreateConatinerParams{
 			ID:                    ramdomId.String(),
 			CustomID:              sql.NullString{String: req.OrderNo, Valid: true},
 			Status:                "AT_LOCATION",
 			Owner:                 "CONVEYOR",
+			PlacementOrder:        curOrder + 1,
 			Updatedat:             time.Now(),
 			Metadata:              prettyJSON,
 			CustomCargoMetadataID: sql.NullString{String: config.Cfg.DEFAULT_CONTAINER_FORMAT_ID, Valid: true},

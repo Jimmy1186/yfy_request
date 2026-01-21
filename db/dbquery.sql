@@ -25,11 +25,12 @@ INSERT INTO cargo_info (
     status, 
     owner,
     metadata,
+    placement_order,
     updatedAt,
     custom_cargo_metadata_id,
     conveyor_configId
 ) VALUES (
-    ?,?,?,?,?,?,?,?
+    ?,?,?,?,?,?,?,?,?
 );
 
 
@@ -53,3 +54,11 @@ WHERE pn.name = ?;
 
 -- name: PeripheralName :one
 SELECT * FROM peripheral_name WHERE name = ?;
+
+
+-- name: CurrentContainerMaxOrder :one
+SELECT placement_order FROM cargo_info ci
+JOIN conveyor_config cc ON cc.id = ci.conveyor_configId
+WHERE cc.id = ? 
+ORDER BY placement_order DESC
+LIMIT 1;      
