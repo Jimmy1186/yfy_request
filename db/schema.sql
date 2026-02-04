@@ -93,7 +93,7 @@ CREATE TABLE `Loc` (
   `y` double NOT NULL DEFAULT '0',
   `canRotate` tinyint(1) NOT NULL DEFAULT '0',
   `connectedRoadIds` json DEFAULT NULL,
-  `areaType` enum('CHARGING','DISPATCH','STANDBY','STORAGE','EXTRA','ELEVATOR','ROBOTIC_ARM','CONVEYOR','LIFT_GATE','GATE_WAIT_POINT','PALLETIZER','ROTATE_TABLE','STACK') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `areaType` enum('CHARGING','DISPATCH','STANDBY','STORAGE','EXTRA','ELEVATOR','ROBOTIC_ARM','CONVEYOR','LIFT_GATE','GATE_WAIT_POINT','PALLETIZER','ROTATE_TABLE','PACKAGE','STACK') COLLATE utf8mb4_unicode_ci NOT NULL,
   `cost` double NOT NULL DEFAULT '0',
   `translateX` double NOT NULL DEFAULT '-0.4',
   `translateY` double NOT NULL DEFAULT '-0.3',
@@ -501,21 +501,22 @@ CREATE TABLE `cargo_info` (
   `script_robot_id` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `shelfConfigId` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `custom_cargo_metadata_id` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `conveyor_configId` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `elevator_config_id` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `custom_id` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `owner` enum('CONVEYOR','ELEVATOR','SHIFT','AMR','STORAGE') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `owner` enum('CONVEYOR','ELEVATOR','SHIFT','AMR','STORAGE','STACK') COLLATE utf8mb4_unicode_ci NOT NULL,
   `stack_config_id` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `placement_order` int NOT NULL DEFAULT '0',
+  `addon_metadata` json DEFAULT NULL,
+  `conveyor_config_id` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `cargo_info_conveyor_configId_fkey` (`conveyor_configId`),
   KEY `cargo_info_custom_cargo_metadata_id_fkey` (`custom_cargo_metadata_id`),
   KEY `cargo_info_elevator_config_id_fkey` (`elevator_config_id`),
   KEY `cargo_info_register_robot_id_fkey` (`register_robot_id`),
   KEY `cargo_info_script_robot_id_fkey` (`script_robot_id`),
   KEY `cargo_info_shelfConfigId_fkey` (`shelfConfigId`),
   KEY `cargo_info_stack_config_id_idx` (`stack_config_id`),
-  CONSTRAINT `cargo_info_conveyor_configId_fkey` FOREIGN KEY (`conveyor_configId`) REFERENCES `conveyor_config` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  KEY `cargo_info_conveyor_config_id_fkey` (`conveyor_config_id`),
+  CONSTRAINT `cargo_info_conveyor_config_id_fkey` FOREIGN KEY (`conveyor_config_id`) REFERENCES `conveyor_config` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `cargo_info_custom_cargo_metadata_id_fkey` FOREIGN KEY (`custom_cargo_metadata_id`) REFERENCES `custom_cargo_metadata` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `cargo_info_elevator_config_id_fkey` FOREIGN KEY (`elevator_config_id`) REFERENCES `elevator_config` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `cargo_info_register_robot_id_fkey` FOREIGN KEY (`register_robot_id`) REFERENCES `register_robot` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -965,7 +966,7 @@ CREATE TABLE `peripheral_name` (
   `name` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `description` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   `quantity` int NOT NULL DEFAULT '0',
-  `type` enum('CHARGING','DISPATCH','STANDBY','STORAGE','EXTRA','ELEVATOR','ROBOTIC_ARM','CONVEYOR','LIFT_GATE','GATE_WAIT_POINT','PALLETIZER','ROTATE_TABLE','STACK') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type` enum('CHARGING','DISPATCH','STANDBY','STORAGE','EXTRA','ELEVATOR','ROBOTIC_ARM','CONVEYOR','LIFT_GATE','GATE_WAIT_POINT','PALLETIZER','ROTATE_TABLE','PACKAGE','STACK') COLLATE utf8mb4_unicode_ci NOT NULL,
   `group_id` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `load_priority` int NOT NULL DEFAULT '0',
   `offload_priority` int NOT NULL DEFAULT '0',
@@ -1138,10 +1139,8 @@ DROP TABLE IF EXISTS `stack_config`;
 CREATE TABLE `stack_config` (
   `id` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
   `disable` tinyint(1) NOT NULL DEFAULT '0',
-  `heights` json NOT NULL,
-  `stack_count` int NOT NULL DEFAULT '0',
   `name` varchar(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `mock_wcs_stationId` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `mock_wcs_station_id` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `stack_config_name_key` (`name`),
   CONSTRAINT `stack_config_name_fkey` FOREIGN KEY (`name`) REFERENCES `peripheral_name` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -1305,4 +1304,4 @@ CREATE TABLE `warning_id_list` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-01-21 15:21:05
+-- Dump completed on 2026-01-28 15:24:51

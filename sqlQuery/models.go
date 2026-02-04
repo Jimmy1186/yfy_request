@@ -66,6 +66,7 @@ const (
 	CargoInfoOwnerSHIFT    CargoInfoOwner = "SHIFT"
 	CargoInfoOwnerAMR      CargoInfoOwner = "AMR"
 	CargoInfoOwnerSTORAGE  CargoInfoOwner = "STORAGE"
+	CargoInfoOwnerSTACK    CargoInfoOwner = "STACK"
 )
 
 func (e *CargoInfoOwner) Scan(src interface{}) error {
@@ -162,6 +163,7 @@ const (
 	LocAreatypeGATEWAITPOINT LocAreatype = "GATE_WAIT_POINT"
 	LocAreatypePALLETIZER    LocAreatype = "PALLETIZER"
 	LocAreatypeROTATETABLE   LocAreatype = "ROTATE_TABLE"
+	LocAreatypePACKAGE       LocAreatype = "PACKAGE"
 	LocAreatypeSTACK         LocAreatype = "STACK"
 )
 
@@ -263,6 +265,7 @@ const (
 	PeripheralNameTypeGATEWAITPOINT PeripheralNameType = "GATE_WAIT_POINT"
 	PeripheralNameTypePALLETIZER    PeripheralNameType = "PALLETIZER"
 	PeripheralNameTypeROTATETABLE   PeripheralNameType = "ROTATE_TABLE"
+	PeripheralNameTypePACKAGE       PeripheralNameType = "PACKAGE"
 	PeripheralNameTypeSTACK         PeripheralNameType = "STACK"
 )
 
@@ -575,12 +578,13 @@ type CargoInfo struct {
 	ScriptRobotID         sql.NullString
 	Shelfconfigid         sql.NullString
 	CustomCargoMetadataID sql.NullString
-	ConveyorConfigid      sql.NullString
 	ElevatorConfigID      sql.NullString
 	CustomID              sql.NullString
 	Owner                 CargoInfoOwner
 	StackConfigID         sql.NullString
 	PlacementOrder        int32
+	AddonMetadata         json.RawMessage
+	ConveyorConfigID      sql.NullString
 }
 
 type Category struct {
@@ -978,10 +982,8 @@ type SpawnCargoPeripheralGroupBridge struct {
 type StackConfig struct {
 	ID               string
 	Disable          bool
-	Heights          json.RawMessage
-	StackCount       int32
 	Name             string
-	MockWcsStationid sql.NullString
+	MockWcsStationID sql.NullString
 }
 
 type Tagsetting struct {

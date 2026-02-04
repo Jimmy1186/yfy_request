@@ -123,7 +123,7 @@ func (a *RobotAmrRequest) OrderInfoReq(c *gin.Context) {
 			Updatedat:             time.Now(),
 			Metadata:              prettyJSON,
 			CustomCargoMetadataID: sql.NullString{String: config.Cfg.DEFAULT_CONTAINER_FORMAT_ID, Valid: true},
-			ConveyorConfigid:      sql.NullString{String: conveyorId, Valid: true},
+			ConveyorConfigID:      sql.NullString{String: conveyorId, Valid: true},
 		})
 
 		if err != nil {
@@ -234,7 +234,7 @@ func (a *RobotAmrRequest) CallTrayReq(c *gin.Context) {
 			Updatedat:             time.Now(),
 			Metadata:              prettyJSON,
 			CustomCargoMetadataID: sql.NullString{String: config.Cfg.DEFAULT_TRAY_FORMAT_ID, Valid: true},
-			ConveyorConfigid:      sql.NullString{String: conveyorId, Valid: true},
+			ConveyorConfigID:      sql.NullString{String: conveyorId, Valid: true},
 		})
 
 		if err != nil {

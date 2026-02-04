@@ -28,7 +28,7 @@ INSERT INTO cargo_info (
     placement_order,
     updatedAt,
     custom_cargo_metadata_id,
-    conveyor_configId
+    conveyor_config_id
 ) VALUES (
     ?,?,?,?,?,?,?,?,?
 );
@@ -58,7 +58,7 @@ SELECT * FROM peripheral_name WHERE name = ?;
 
 -- name: CurrentContainerMaxOrder :one
 SELECT placement_order FROM cargo_info ci
-JOIN conveyor_config cc ON cc.id = ci.conveyor_configId
+JOIN conveyor_config cc ON cc.id = ci.conveyor_config_id
 WHERE cc.id = ? 
 ORDER BY placement_order DESC
 LIMIT 1;      

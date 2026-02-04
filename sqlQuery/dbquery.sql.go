@@ -36,7 +36,7 @@ INSERT INTO cargo_info (
     placement_order,
     updatedAt,
     custom_cargo_metadata_id,
-    conveyor_configId
+    conveyor_config_id
 ) VALUES (
     ?,?,?,?,?,?,?,?,?
 )
@@ -51,7 +51,7 @@ type CreateConatinerParams struct {
 	PlacementOrder        int32
 	Updatedat             time.Time
 	CustomCargoMetadataID sql.NullString
-	ConveyorConfigid      sql.NullString
+	ConveyorConfigID      sql.NullString
 }
 
 func (q *Queries) CreateConatiner(ctx context.Context, arg CreateConatinerParams) error {
@@ -64,7 +64,7 @@ func (q *Queries) CreateConatiner(ctx context.Context, arg CreateConatinerParams
 		arg.PlacementOrder,
 		arg.Updatedat,
 		arg.CustomCargoMetadataID,
-		arg.ConveyorConfigid,
+		arg.ConveyorConfigID,
 	)
 	return err
 }
@@ -102,7 +102,7 @@ func (q *Queries) CreateConatinerHistory(ctx context.Context, arg CreateConatine
 
 const currentContainerMaxOrder = `-- name: CurrentContainerMaxOrder :one
 SELECT placement_order FROM cargo_info ci
-JOIN conveyor_config cc ON cc.id = ci.conveyor_configId
+JOIN conveyor_config cc ON cc.id = ci.conveyor_config_id
 WHERE cc.id = ? 
 ORDER BY placement_order DESC
 LIMIT 1
