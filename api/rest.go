@@ -8,6 +8,7 @@ import (
 	dbs "kenmec/yfyRequest/jimmy/db"
 	gen "kenmec/yfyRequest/jimmy/protoGen"
 	"kenmec/yfyRequest/jimmy/sqlQuery"
+	"log"
 	"net/http"
 	"time"
 
@@ -63,9 +64,9 @@ func (a *RobotAmrRequest) OrderInfoReq(c *gin.Context) {
 	}
 	prettyJSON, _ := json.MarshalIndent(req, "", "  ")
 
-	//fmt.Println("================ DEBUG LOG ================")
-	// fmt.Printf("📦 Data Content:\n%s\n", string(prettyJSON))
-	// fmt.Println("===========================================")
+	fmt.Println("================ DEBUG LOG ================")
+	fmt.Printf("📦 Data Content:\n%s\n", string(prettyJSON))
+	fmt.Println("===========================================")
 
 	scriptName := dbs.CurrentScriptName()
 	conveyorFullName := config.Cfg.CONVEYOR_LOCATION_NAME + "-" + scriptName
@@ -73,12 +74,13 @@ func (a *RobotAmrRequest) OrderInfoReq(c *gin.Context) {
 		String: conveyorFullName,
 		Valid:  true,
 	})
-
+	fmt.Printf("============\n")
+	fmt.Println(conveyorFullName)
 	if err != nil {
 		c.JSON(500, gin.H{
 			"code":      500,
 			"message":   "交管尚未初始化",
-			"result":    gin.H{},
+			"result":    err.Error(),
 			"success":   false,
 			"timpstamp": timestamp,
 		})
@@ -92,7 +94,7 @@ func (a *RobotAmrRequest) OrderInfoReq(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"code":      500,
 			"message":   "生成 UUID 失敗",
-			"result":    gin.H{},
+			"result":    err.Error(),
 			"success":   false,
 			"timpstamp": timestamp,
 		})
@@ -144,6 +146,7 @@ func (a *RobotAmrRequest) OrderInfoReq(c *gin.Context) {
 	})
 
 	if err != nil {
+		fmt.Println("❌ DB ERROR:", err)
 		c.JSON(500, gin.H{"message": "資料庫操作失敗: " + err.Error()})
 		return
 	}
@@ -204,10 +207,11 @@ func (a *RobotAmrRequest) CallTrayReq(c *gin.Context) {
 		c.JSON(500, gin.H{
 			"code":      500,
 			"message":   "交管尚未初始化",
-			"result":    gin.H{},
+			"result":    err.Error(),
 			"success":   false,
 			"timpstamp": timestamp,
 		})
+		log.Fatal(err)
 		return
 	}
 
@@ -218,7 +222,7 @@ func (a *RobotAmrRequest) CallTrayReq(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"code":      500,
 			"message":   "生成 UUID 失敗",
-			"result":    gin.H{},
+			"result":    err.Error(),
 			"success":   false,
 			"timpstamp": timestamp,
 		})
